@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'login.ui'
@@ -7,10 +8,11 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
 import sys,urllib2,urllib
+
+from PyQt4 import QtCore, QtGui
 from mainwindow import MainWindow
-#import mainwindow
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -143,7 +145,6 @@ class LoginFrame(QtGui.QDialog):
 def main():
     app=QtGui.QApplication(sys.argv)
     login=LoginFrame()
-    #login.show()
     if login.exec_():
         mw=MainWindow()      
         mw.show()

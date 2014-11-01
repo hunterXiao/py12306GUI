@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 #-*-coding:utf8-*-
+
+import sys
 
 from PyQt4 import QtCore, QtGui
 from autostation import stationQuery
-import sys
-#import login
+
 try:
     _transUtf8 = QtCore.QString.fromUtf8
 except:
@@ -13,7 +15,7 @@ except:
 #站点Model表头
 #车站格式：bjb|北京北|VAP|beijingbei|bjb|0
 
-code,stationName,stationCode,qp,jp,order = range(0,6)
+code,stationName,stationCode,qp,jp = range(0,5)
 
 ##def createStationModel(stationList,parent):
 ##    model = QtGui.QStandardItemModel(0,6,parent)
@@ -63,7 +65,7 @@ class Window(QtGui.QDialog):
         
         self.lineEdit.textChanged.connect(self.findData)
         
-        self.sourceModel = QtGui.QStandardItemModel(0,6,self)
+        self.sourceModel = QtGui.QStandardItemModel(0,5,self)
         self.proxymodel = QtGui.QSortFilterProxyModel()
         self.proxymodel.setSourceModel(self.sourceModel)
         self.proxymodel.sort(5)
@@ -71,9 +73,7 @@ class Window(QtGui.QDialog):
         
         
         self.treeview  = QtGui.QTableView()
-##        self.treeview.setModel(self.sourceModel)
         self.treeview.setModel(self.proxymodel)
-##        self.treeview.sortByColumn(5)
         self.treeview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.treeview.doubleClicked.connect(self.getWholeRowData)
                 
@@ -84,38 +84,38 @@ class Window(QtGui.QDialog):
         
         self.setLayout(layout)
         self.setWindowTitle(_transUtf8('站点查询'))
-        self.resize(650,300)
+        self.resize(535,300)
         
     def initModel(self):
-        self.sourceModel.setHeaderData(code,QtCore.Qt.Horizontal,_transUtf8(u"拼音编码"))
+        self.sourceModel.setHeaderData(code,QtCore.Qt.Horizontal,_transUtf8(u"编码"))
         self.sourceModel.setHeaderData(stationName,QtCore.Qt.Horizontal,_transUtf8(u"车站名称"))
         self.sourceModel.setHeaderData(stationCode,QtCore.Qt.Horizontal,_transUtf8(u"车站代码"))
         self.sourceModel.setHeaderData(qp, QtCore.Qt.Horizontal, _transUtf8(u"全拼"))
         self.sourceModel.setHeaderData(jp,QtCore.Qt.Horizontal,_transUtf8(u"简拼"))
-        self.sourceModel.setHeaderData(order,QtCore.Qt.Horizontal,_transUtf8(u"排位"))
+       # self.sourceModel.setHeaderData(order,QtCore.Qt.Horizontal,_transUtf8(u"排位"))
         
     
     def addItem(self,stationlist):
         if stationlist is not None:
             for data in stationlist:
                 self.sourceModel.insertRow(0)
-                for column in xrange(6):
+                for column in xrange(5):
                     if column == 0:
-                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.a))
+                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.abbr))
                     elif column == 1:
-                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.b))
+                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.name))
                     elif column == 2:
-                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.c))
+                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.telecode))
                     elif column == 3:
-                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.d))
+                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.pinyin))
                     elif column == 4:
-                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.e))
-                    elif column == 5:
-                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.f))
+                        self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.pyabbr))
+                    # elif column == 5:
+                    #     self.sourceModel.setData(self.sourceModel.index(0, column), _transUtf8(data.f))
         else:
             self.sourceModel.removeRows(0,self.sourceModel.columnCount())
     
-    def findData(self,text):
+    def findData(self):
         query=self.lineEdit.text()
         stationlist=stationQuery(str(query))
         B=self.sourceModel.removeRows(0,self.sourceModel.rowCount())
@@ -136,9 +136,4 @@ class Window(QtGui.QDialog):
             #data = x.data().toString()
             #QtGui.QMessageBox.information(self, "Information", data)
 
-if __name__=='__main__':
-    app=QtGui.QApplication(sys.argv)
-    window=Window()
-    window.show()
-    sys.exit(app.exec_())
     

@@ -1,10 +1,10 @@
+#!/usr/bin/env python
 #-*-coding:utf8-*-
 
-__author__='hunterXiao'
-
-from PyQt4 import QtCore,QtGui
 import sys
 import stationSelect
+
+from PyQt4 import QtCore,QtGui
 
 try:
 	_fromUTF8 = QtCore.QString.fromUtf8
