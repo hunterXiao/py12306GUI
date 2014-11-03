@@ -118,7 +118,7 @@ class Window(QtGui.QDialog):
     def findData(self):
         query=self.lineEdit.text()
         stationlist=stationQuery(str(query))
-        B=self.sourceModel.removeRows(0,self.sourceModel.rowCount())
+        self.sourceModel.removeRows(0,self.sourceModel.rowCount())
         self.addItem(stationlist)
         
     def getWholeRowData(self,index):
