@@ -9,6 +9,8 @@ _STATION_PATH="./stations"
 
 logging.basicConfig(filename='log.txt',format='%(asctime)s %(message)s -->',datefmt='%Y/%m/%d %I:%M:%S',level=logging.INFO)
 
+station_matched = []
+
 class Dict(dict):
     """docstring for Dict"""
     def __init__(self, names=(),values=(),**kw):
@@ -41,9 +43,8 @@ def parseStationList(path=_STATION_PATH):
         sys.exit()
 
 def stationQuery(letter):
-    result=[]
+    global station_matched
+    del station_matched[:]
     for line in parseStationList():
         if line.pyabbr.startswith(letter.lower()) or line.pinyin.startswith(letter.lower()) or line.name.startswith(letter):
-            result.append(line)
-    if len(result):
-        return sorted(result)
+            station_matched.append(line)
