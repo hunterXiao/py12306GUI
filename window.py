@@ -6,12 +6,8 @@ import urllib
 
 import stationSelect
 
-from random import random
-from os import makedirs
-from os.path import isdir, dirname
 from PyQt4 import QtCore, QtGui
-#from mainwindow import MainWindow
-
+from orderflow import getVerifyCode, init
 
 try:
     _fromUTF8 = QtCore.QString.fromUtf8
@@ -118,34 +114,20 @@ class ImageLabel(QtGui.QLabel):
 
     def __init__(self,parent=None):
         super(ImageLabel, self).__init__(parent)
-        self.refreshImg(isfirst = True)
+        self.refreshImg(first = True)
         self.clicked.connect(self.refreshImg)
 
     def mousePressEvent(self,event):
         event.accept()
         self.clicked.emit()
 
-    def refreshImg(self, isfirst = False):
-        filename = 'verifyCode/getPassCodeNew.png'
-        dir1 = dirname(filename)
-        if not isdir(dir1):
-            makedirs(dir1)
-        if not isfirst:
-            url = 'https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&%.17s' % random()
-            try:
-                urllib.urlretrieve(url,filename)
-                self.setPixmap(QtGui.QPixmap(_fromUTF8(filename)))
-            except:
-                QtGui.QMessageBox.critical(self,"Error",_fromUTF8(u"网络连接异常,验证码获取失败"))
-                sys.exit()
+    def refreshImg(self, first = False):
+        retval = getVerifyCode(first)
+        if retval:
+            self.setPixmap(QtGui.QPixmap(_fromUTF8(retval)))
         else:
-            url = 'https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand'
-            try:
-                urllib.urlretrieve(url,filename)
-                self.setPixmap(QtGui.QPixmap(_fromUTF8(filename)))
-            except:
-                QtGui.QMessageBox.critical(self,"Error",_fromUTF8(u"网络连接异常,验证码获取失败"))
-                sys.exit()
+            QtGui.QMessageBox.critical(self,"Error",_fromUTF8(u"网络连接异常,验证码获取失败"))
+            sys.exit()
 
 class LoginFrame(QtGui.QDialog):
     """docstring for LoginFrame"""
@@ -244,6 +226,7 @@ class PersonalLineEdit(QtGui.QLineEdit):
 
 def main():
     app=QtGui.QApplication(sys.argv)
+    init() 
     login=LoginFrame()
     if login.exec_():
         mw=MainWindow()      

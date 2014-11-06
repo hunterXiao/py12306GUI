@@ -4,7 +4,7 @@
 import sys
 
 from PyQt4 import QtCore, QtGui
-from autostation import stationQuery
+from autostation import stationQuery, station_matched
 
 try:
     _transUtf8 = QtCore.QString.fromUtf8
@@ -89,9 +89,9 @@ class Window(QtGui.QDialog):
 
     def findData(self): 
         query= self.lineEdit.text()
-        stationlist=stationQuery(str(query))
+        stationQuery(str(query))
         self.sourceModel.removeRows(0,self.sourceModel.rowCount())
-        self.addItem(stationlist)
+        self.addItem(station_matched)
 
     def getWholeRowData(self,index):
         m = index.model()
