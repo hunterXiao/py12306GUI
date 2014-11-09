@@ -7,7 +7,7 @@ import urllib
 import stationSelect
 
 from PyQt4 import QtCore, QtGui
-from orderflow import getVerifyCode, init
+from orderflow import getVerifyCode, init, login
 
 try:
     _fromUTF8 = QtCore.QString.fromUtf8
@@ -138,10 +138,14 @@ class LoginFrame(QtGui.QDialog):
         self.ui.pushButton.clicked.connect(self.check)
 
     def check(self):
-        if self.ui.userEdit.text() == 'admin' and self.ui.passwdEdit.text() == 'passwd':
+        username = str(self.ui.userEdit.text())
+        password = str(self.ui.passwdEdit.text())
+        verifycode = str(self.ui.captchaEdit.text())
+        retval = login(username, password, verifycode)
+        if retval[0] == True:
             self.accept()
         else:
-            QtGui.QMessageBox.critical(self,u'登陆失败',u"用户名或密码错误！")
+            QtGui.QMessageBox.critical(self, u'登录失败', retval[1])
 
 
 class MainWindow(QtGui.QDialog):
@@ -227,8 +231,8 @@ class PersonalLineEdit(QtGui.QLineEdit):
 def main():
     app=QtGui.QApplication(sys.argv)
     init() 
-    login=LoginFrame()
-    if login.exec_():
+    loginfrm=LoginFrame()
+    if loginfrm.exec_():
         mw=MainWindow()      
         mw.show()
         sys.exit(app.exec_()) 
